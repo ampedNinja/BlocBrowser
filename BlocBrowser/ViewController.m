@@ -39,7 +39,7 @@
     self.textField.returnKeyType = UIReturnKeyDone;
     self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.textField.placeholder = NSLocalizedString(@"Website URL", @"Placeholder text for web browser URL field");
+    self.textField.placeholder = NSLocalizedString(@"Enter website URL or a search", @"Placeholder text for web browser URL field");
     self.textField.backgroundColor = [UIColor colorWithWhite:220/255.0f alpha:1];
     self.textField.delegate = self;
     
@@ -116,8 +116,18 @@
     NSURL *URL = [NSURL URLWithString:URLString];
     
     if (!URL.scheme) {
-        //user didn't type http
-        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
+        //user didn't type http or wants to google search
+        NSRange spacesInString = [URLString rangeOfString:@" "];
+        if (spacesInString.location != NSNotFound) {
+            NSPredicate *noWhiteSpaces = [NSPredicate predicateWithFormat:@"SELF != ''"];
+            NSArray *searchTermsUnfiltered = [URLString componentsSeparatedByString:@" "];
+            NSArray *searchTerms = [searchTermsUnfiltered filteredArrayUsingPredicate:noWhiteSpaces];
+            
+            URLString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@", [searchTerms componentsJoinedByString:@"+"]];
+            URL = [NSURL URLWithString:URLString];
+        } else {
+            URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
+        }
     }
     
     if (URL) {
