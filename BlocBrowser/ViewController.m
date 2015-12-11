@@ -114,26 +114,28 @@
     
     NSString *URLString = textField.text;
     NSURL *URL = [NSURL URLWithString:URLString];
+    NSRange isWebAddress = [URLString rangeOfString:@"."];
+    NSRange spacesInString = [URLString rangeOfString:@" "];
     
-    if (!URL.scheme) {
-        //user didn't type http or wants to google search
-        NSRange spacesInString = [URLString rangeOfString:@" "];
+    if (!URL.scheme && (isWebAddress.location != NSNotFound)) {
+        URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
+    } else if (isWebAddress.location == NSNotFound) {
         if (spacesInString.location != NSNotFound) {
             NSPredicate *noWhiteSpaces = [NSPredicate predicateWithFormat:@"SELF != ''"];
             NSArray *searchTermsUnfiltered = [URLString componentsSeparatedByString:@" "];
             NSArray *searchTerms = [searchTermsUnfiltered filteredArrayUsingPredicate:noWhiteSpaces];
-            
             URLString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@", [searchTerms componentsJoinedByString:@"+"]];
             URL = [NSURL URLWithString:URLString];
         } else {
-            URL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", URLString]];
+            URLString = [NSString stringWithFormat:@"http://www.google.com/search?q=%@", URLString];
+            URL = [NSURL URLWithString:URLString];
         }
     }
     
     if (URL) {
         NSURLRequest *request = [NSURLRequest requestWithURL:URL];
         [self.webView loadRequest:request];
-    }
+    };
     
     return NO;
     
