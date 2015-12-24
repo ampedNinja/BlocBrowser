@@ -127,6 +127,10 @@
     }
 }
 
+- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToResizeToolbar:(CGAffineTransform *)transform {
+    self.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
+}
+
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
