@@ -128,7 +128,9 @@
 }
 
 - (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
-    toolbar.transform = CGAffineTransformMakeScale(scale, scale);
+    for (UIView *view in toolbar.subviews) {
+        view.transform = CGAffineTransformMakeScale(scale, scale);
+    }
 }
 
 
