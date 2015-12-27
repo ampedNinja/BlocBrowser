@@ -127,9 +127,10 @@
     }
 }
 
-- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToResizeToolbar:(CGAffineTransform *)transform {
-    self.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
+- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
+    toolbar.transform = CGAffineTransformMakeScale(scale, scale);
 }
+
 
 #pragma mark - WKNavigationDelegate
 
