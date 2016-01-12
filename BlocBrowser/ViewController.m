@@ -62,6 +62,7 @@
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
+    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
 
 }
 
@@ -76,8 +77,6 @@
     // assign the frames
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
-    
-    self.awesomeToolbar.frame = CGRectMake(20, 100, 280, 60);
     
 }
 
@@ -104,22 +103,18 @@
 
 #pragma mark - AWesomeFloatingToolbarDelegate
 
-- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title {
-    if ([title isEqual:NSLocalizedString(@"Back", @"Back command")]) {
+- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)buttonTitle {
+    if ([buttonTitle isEqual:NSLocalizedString(@"Back", @"Back command")]) {
         [self.webView goBack];
-        NSLog(@"back button pressed");
         
-    } else if ([title isEqual:NSLocalizedString(@"Forward", @"Forward command")]) {
+    } else if ([buttonTitle isEqual:NSLocalizedString(@"Forward", @"Forward command")]){
         [self.webView goForward];
-        NSLog(@"forward button pressed");
         
-    } else if ([title isEqual:NSLocalizedString(@"Stop", "Stop command")]) {
+    } else if ([buttonTitle isEqual:NSLocalizedString(@"Stop", "Stop command")]) {
         [self.webView stopLoading];
-        NSLog(@"stop button pressed");
 
-    } else if ([title isEqual:NSLocalizedString(@"Refresh", "Refresh command")]) {
+    } else if ([buttonTitle isEqual:NSLocalizedString(@"Refresh", "Refresh command")]) {
         [self.webView reload];
-        NSLog(@"reload button pressed");
 
     }
 }
@@ -136,13 +131,16 @@
 }
 
 - (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
-//    for (UIView *view in toolbar.subviews) {
-//        view.transform = CGAffineTransformMakeScale(scale, scale);
-//    }
-    toolbar.transform = CGAffineTransformScale(CGAffineTransformIdentity, scale, scale);
-    toolbar.frame = CGRectApplyAffineTransform(toolbar.frame, CGAffineTransformMakeScale(scale, scale));
+    CGRect potentialNewFrame = CGRectApplyAffineTransform(toolbar.frame, CGAffineTransformMakeScale(scale, scale));
+    
+    if (CGRectContainsRect(self.view.bounds, potentialNewFrame)) {
+        toolbar.frame = potentialNewFrame;
+    }
 }
 
+- (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didLongPressWithDuration:(CFTimeInterval)time {
+    [self viewWillLayoutSubviews];
+}
 
 #pragma mark - WKNavigationDelegate
 
