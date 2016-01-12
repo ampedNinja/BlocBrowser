@@ -76,34 +76,36 @@
 
 - (void) layoutSubviews {
     // Set the frames for the labels.
-    
-    for (UILabel *thisLabel in self.labels) {
-        NSUInteger currentLabelIndex = [self.labels indexOfObject:thisLabel];
-        
-        CGFloat labelHeight = CGRectGetHeight(self.bounds) / 2;
-        CGFloat labelWidth = CGRectGetWidth(self.bounds) / 2;
-        CGFloat labelX = 0;
-        CGFloat labelY = 0;
-        
-        // Adjust labelX and labelY for each label
-        if (currentLabelIndex < 2) {
-            // 0 or 1, go on top
-            labelY = 0;
-        } else {
-            // 2 or 3, go on bottom
-            labelY = CGRectGetHeight(self.bounds) / 2;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        for (UILabel *thisLabel in self.labels) {
+            NSUInteger currentLabelIndex = [self.labels indexOfObject:thisLabel];
+            
+            CGFloat labelHeight = CGRectGetHeight(self.bounds) / 2;
+            CGFloat labelWidth = CGRectGetWidth(self.bounds) / 2;
+            CGFloat labelX = 0;
+            CGFloat labelY = 0;
+            
+            // Adjust labelX and labelY for each label
+            if (currentLabelIndex < 2) {
+                // 0 or 1, go on top
+                labelY = 0;
+            } else {
+                // 2 or 3, go on bottom
+                labelY = CGRectGetHeight(self.bounds) / 2;
+            }
+            
+            if (currentLabelIndex % 2 == 0) {
+                //Is label divisable by 2? Goes on left.
+                labelX = 0;
+            } else {
+                // Otherwise, goes on right.
+                labelX = CGRectGetWidth(self.bounds) / 2;
+            }
+            
+            thisLabel.frame = CGRectMake(labelX, labelY, labelWidth, labelHeight);
         }
-        
-        if (currentLabelIndex % 2 == 0) {
-            //Is label divisable by 2? Goes on left.
-            labelX = 0;
-        } else {
-            // Otherwise, goes on right.
-            labelX = CGRectGetWidth(self.bounds) / 2;
-        }
-        
-        thisLabel.frame = CGRectMake(labelX, labelY, labelWidth, labelHeight);
-    }
+    });
 }
 
 #pragma mark - Touch Handling

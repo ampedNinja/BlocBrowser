@@ -107,12 +107,20 @@
 - (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle:(NSString *)title {
     if ([title isEqual:NSLocalizedString(@"Back", @"Back command")]) {
         [self.webView goBack];
+        NSLog(@"back button pressed");
+        
     } else if ([title isEqual:NSLocalizedString(@"Forward", @"Forward command")]) {
         [self.webView goForward];
+        NSLog(@"forward button pressed");
+        
     } else if ([title isEqual:NSLocalizedString(@"Stop", "Stop command")]) {
         [self.webView stopLoading];
+        NSLog(@"stop button pressed");
+
     } else if ([title isEqual:NSLocalizedString(@"Refresh", "Refresh command")]) {
         [self.webView reload];
+        NSLog(@"reload button pressed");
+
     }
 }
 
@@ -128,9 +136,11 @@
 }
 
 - (void)floatingToolbar:(AwesomeFloatingToolbar *)toolbar didTryToPinchWithScale:(CGFloat)scale {
-    for (UIView *view in toolbar.subviews) {
-        view.transform = CGAffineTransformMakeScale(scale, scale);
-    }
+//    for (UIView *view in toolbar.subviews) {
+//        view.transform = CGAffineTransformMakeScale(scale, scale);
+//    }
+    toolbar.transform = CGAffineTransformScale(CGAffineTransformIdentity, scale, scale);
+    toolbar.frame = CGRectApplyAffineTransform(toolbar.frame, CGAffineTransformMakeScale(scale, scale));
 }
 
 
